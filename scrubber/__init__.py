@@ -34,7 +34,7 @@ def urlize(text, trim_url_limit=None, nofollow=False, autoescape=False):
 
     *Modified from Django*
     """
-    from urllib import quote as urlquote
+    from urllib.parse import quote as urlquote
 
     LEADING_PUNCTUATION  = ['(', '<', '&lt;']
     TRAILING_PUNCTUATION = ['.', ',', ')', '>', '\n', '&gt;']
@@ -55,7 +55,7 @@ def urlize(text, trim_url_limit=None, nofollow=False, autoescape=False):
     for i, word in enumerate(words):
         match = None
         if '.' in word or '@' in word or ':' in word:
-            match = punctuation_re.match(word.replace(u'\u2019', "'"))
+            match = punctuation_re.match(word.replace('\u2019', "'"))
         if match:
             lead, middle, trail = match.groups()
             middle = middle.encode('utf-8')
@@ -82,7 +82,7 @@ def urlize(text, trim_url_limit=None, nofollow=False, autoescape=False):
                 words[i] = escape(word)
         elif autoescape:
             words[i] = escape(word)
-    return u''.join(words)
+    return ''.join(words)
 
 class ScrubberWarning(object):
     pass
@@ -133,7 +133,7 @@ class Scrubber(object):
     def autolink_soup(self, soup):
         """Autolink urls in text nodes that aren't already linked (inside anchor tags)."""
         def _autolink(node):
-            if isinstance(node, basestring):
+            if isinstance(node, str):
                 text = node
                 text2 = urlize(text, nofollow=self.nofollow)
                 if text != text2:
@@ -154,7 +154,7 @@ class Scrubber(object):
                 toremove.append((False, node))
                 continue
 
-            if isinstance(node, basestring):
+            if isinstance(node, str):
                 continue
 
             # Remove disallowed tags
@@ -183,7 +183,7 @@ class Scrubber(object):
 
     def normalize_html(self, soup):
         """Convert tags to a standard set. (e.g. convert 'b' tags to 'strong')"""
-        for node in soup.findAll(self.normalized_tag_replacements.keys()):
+        for node in soup.findAll(list(self.normalized_tag_replacements.keys())):
             node.name = self.normalized_tag_replacements[node.name]
         # for node in soup.findAll('br', clear="all"):
         #     node.extract()
@@ -254,7 +254,7 @@ class Scrubber(object):
             self.autolink_soup(soup)
 
         toremove = []
-        for tag_name, scrubbers in self.tag_scrubbers.items():
+        for tag_name, scrubbers in list(self.tag_scrubbers.items()):
             for node in soup(tag_name):
                 for scrub in scrubbers:
                     remove = scrub(node)
@@ -275,7 +275,7 @@ class Scrubber(object):
         html = self._scrub_html_pre(html)
         soup = BeautifulSoup(html)
         self._scrub_soup(soup)
-        html = unicode(soup)
+        html = str(soup)
         return self._scrub_html_post(html)
 
 class UnapprovedJavascript(ScrubberWarning):

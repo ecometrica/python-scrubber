@@ -49,8 +49,8 @@ class ScrubberTestCase(unittest.TestCase):
             """<span>safe</span>"""
         ),
         ( # Test unicode
-            u"""Mitä kuuluu""",
-            u"""Mitä kuuluu"""
+            """Mitä kuuluu""",
+            """Mitä kuuluu"""
         ),
         ( # Test embed
             """<embed src='http://videomedia.ign.com/ev/ev.swf' flashvars='object_ID=949610&downloadURL=http://pspmovies.ign.com/psp/video/article/852/852594/patapon_021508_flvlowwide.flv&allownetworking="all"' type='application/x-shockwave-flash' width='433' height='360' ></embed>""",
@@ -69,8 +69,8 @@ class ScrubberTestCase(unittest.TestCase):
             """Foo <span>Bar</span>"""
         ),
         ( # a0 == nbsp
-            u"""test\xa0www.this.com""",
-            u"""test\xa0<a href="http://www.this.com" rel="nofollow">www.this.com</a>"""
+            """test\xa0www.this.com""",
+            """test\xa0<a href="http://www.this.com" rel="nofollow">www.this.com</a>"""
         ),
         ( # Remove comments
             "Foo <!-- bar -->",
@@ -89,8 +89,8 @@ class ScrubberTestCase(unittest.TestCase):
             """<a href="http://www.google.com" rel="nofollow">http://www.google.com</a>&nbsp;&nbsp;"""
         ),
         ( # Test unicode with autolinker
-            u"""http://www.google.com/?q=mitä""",
-            u"""<a href="http://www.google.com/?q=mit%C3%A4" rel="nofollow">http://www.google.com/?q=mit\xe4</a>""",
+            """http://www.google.com/?q=mitä""",
+            """<a href="http://www.google.com/?q=mit%C3%A4" rel="nofollow">http://www.google.com/?q=mit\xe4</a>""",
         ),
         ( # Test mailto: links
             """<a href="mailto:test@example.com">Mail Test</a>""",
@@ -111,7 +111,7 @@ class ScrubberTestCase(unittest.TestCase):
 
     def testScrubber(self):
         for html, expected in self.tests:
-            self.failUnlessEqual(self.scrubber.scrub(html), expected)
+            self.assertEqual(self.scrubber.scrub(html), expected)
 
 class SelectiveScriptScrubberTestCase(unittest.TestCase):
     tests = (
@@ -148,7 +148,7 @@ class SelectiveScriptScrubberTestCase(unittest.TestCase):
         for html, expected in self.tests:
             if expected is True:
                 expected = html
-            self.failUnlessEqual(self.scrubber.scrub(html), expected)
+            self.assertEqual(self.scrubber.scrub(html), expected)
 
 if __name__ == '__main__':
     unittest.main()
